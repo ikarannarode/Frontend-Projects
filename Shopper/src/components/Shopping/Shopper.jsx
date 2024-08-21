@@ -4,7 +4,8 @@ export const Shopper = () => {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([{ id: "", title: "", price: "", description: "", category: "", image: "", rating: { rate: "", count: "" } }])
     const [cartCount, setCartCount] = useState(0)
-    const [cartItems, setCartItems] = useState([])
+    const [cartItems, setCartItems] = useState([]);
+    const [display, setDisplay] = useState({ display: "none" });
     function LoadCategories() {
         fetch('https://fakestoreapi.com/products/categories').then((response) => response.json()).then((response) => { response.unshift("all"); setCategories(response) }).catch((error) => console.log(error));
     }
@@ -22,6 +23,14 @@ export const Shopper = () => {
     function handleAddToCartClick(e) {
         fetch(`https://fakestoreapi.com/products/${e.target.value}`).then(data => data.json()).then(response => { cartItems.push(response); setCartCount(cartItems.length); });
 
+    }
+    const handleCartToggle = (e) => {
+        if (display['display'] === 'none') {
+            setDisplay({ display: "block" })
+        }
+        else {
+            setDisplay({ display: "none" })
+        }
     }
 
 
@@ -47,7 +56,7 @@ export const Shopper = () => {
 
                 </div>
                 <div>
-                    <button className='btn position-relative btn-light'>
+                    <button className='btn position-relative btn-light' onClick={handleCartToggle}>
                         <span className='bi bi-cart4'></span> Your Cart
                         <span className='badge rounded-circle bg-danger position-absolute top-0 end-0 p-1.5'>{cartCount}</span>
                     </button>
@@ -90,23 +99,25 @@ export const Shopper = () => {
                     </div>
                 </main>
                 <aside className="col-2">
-                    <table className='table table-hover caption-top'>
-                        <caption>Your Cart Summary</caption>
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Preview</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                cartItems.map(item =>
-                                    <tr> <td>{item.title}</td> <td>
-                                        <img src={item.image} width="50" height="50" /> </td>
-                                    </tr>
-                                )}
-                        </tbody>
-                    </table>
+                    <div style={display}>
+                        <table className='table table-hover caption-top'>
+                            <caption>Your Cart Summary</caption>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Preview</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    cartItems.map(item =>
+                                        <tr> <td>{item.title}</td> <td>
+                                            <img src={item.image} width="50" height="50" /> </td>
+                                        </tr>
+                                    )}
+                            </tbody>
+                        </table>
+                    </div>
                 </aside>
             </section>
         </div>
